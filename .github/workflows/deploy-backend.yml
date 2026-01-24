@@ -9,6 +9,7 @@ env:
   GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
   GCP_REGION: ${{ secrets.GCP_REGION }}
   CLOUD_RUN_SERVICE: ${{ secrets.CLOUD_RUN_SERVICE }}
+  ARTIFACT_REPO: ${{ secrets.ARTIFACT_REPO }}
 
 jobs:
   build-and-deploy:
@@ -26,12 +27,14 @@ jobs:
         with:
           project_id: ${{ env.GCP_PROJECT }}
 
-      - name: Configure docker for gcr
-        run: gcloud auth configure-docker --quiet
+      - name: Configure docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.GCP_REGION }}-docker.pkg.dev --quiet
 
       - name: Build and push container image
         run: |
-          IMAGE=gcr.io/${{ env.GCP_PROJECT }}/${{ env.CLOUD_RUN_SERVICE }}:${{ github.sha }}
+          REPO=${{ env.ARTIFACT_REPO }}
+          if [ -z "$REPO" ]; then REPO="bir"; fi
+          IMAGE=${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT }}/${REPO}/${{ env.CLOUD_RUN_SERVICE }}:${{ github.sha }}
           docker build -t $IMAGE .
           docker push $IMAGE
         env:
@@ -39,7 +42,9 @@ jobs:
 
       - name: Deploy to Cloud Run
         run: |
-          IMAGE=gcr.io/${{ env.GCP_PROJECT }}/${{ env.CLOUD_RUN_SERVICE }}:${{ github.sha }}
+          REPO=${{ env.ARTIFACT_REPO }}
+          if [ -z "$REPO" ]; then REPO="bir"; fi
+          IMAGE=${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT }}/${REPO}/${{ env.CLOUD_RUN_SERVICE }}:${{ github.sha }}
           gcloud run deploy ${{ env.CLOUD_RUN_SERVICE }} \
             --image $IMAGE \
             --region ${{ env.GCP_REGION }} \
