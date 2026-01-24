@@ -136,6 +136,22 @@ if (useFirebase && credJson) {
   }
 }
 
+// If Firestore wasn't initialized with an explicit service account JSON/path,
+// attempt Application Default Credentials (ADC). This allows the server to
+// run on Cloud Run / GCE with an attached service account without shipping
+// a JSON key file into the repository or environment.
+if (!firestore) {
+  try {
+    const admin = require('firebase-admin');
+    // initializeApp() without explicit credentials will use ADC when available
+    admin.initializeApp();
+    firestore = admin.firestore();
+    console.log('Firebase Admin initialized using Application Default Credentials (ADC).');
+  } catch (err) {
+    console.log('Firebase Admin ADC init skipped or failed:', err && err.message ? err.message : err);
+  }
+}
+
 // Read config from environment for Gemini proxy
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_API_URL = process.env.GEMINI_API_URL; // e.g. https://api.example.com/v1/endpoint
