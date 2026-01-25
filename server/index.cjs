@@ -93,6 +93,15 @@ const requestLogger = (req, res, next) => {
 app.use(rateLimiter);
 app.use(requestLogger);
 
+// Basic health/root endpoints (useful on Cloud Run)
+app.get('/', (req, res) => {
+  res.status(200).type('text/plain').send('OK');
+});
+
+app.get('/healthz', (req, res) => {
+  res.status(200).json({ ok: true, ts: new Date().toISOString() });
+});
+
 
 const PORT = process.env.PORT || 4000;
 
