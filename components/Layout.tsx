@@ -73,9 +73,6 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 {link.name}
               </Link>
             ))}
-            <Link to="/admin" className="bg-[#0f365d] text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-[#1a4a7a] transition-all shadow-md active:scale-95">
-              Client Portal
-            </Link>
           </div>
 
           {/* Mobile Toggle */}
@@ -93,9 +90,6 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                   {link.name}
                 </Link>
               ))}
-              <Link to="/admin" className="bg-[#0f365d] text-white px-6 py-3 rounded-xl text-center font-bold">
-                Client Portal
-              </Link>
             </div>
           </div>
         )}
