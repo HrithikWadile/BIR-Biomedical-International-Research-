@@ -30,6 +30,7 @@ export const Admin: React.FC = () => {
   // Cloudflare Pages: set VITE_ADMIN_PASSWORD as a Production environment variable and redeploy
   const ADMIN_PASSWORD = (import.meta as any).env?.VITE_ADMIN_PASSWORD as string | undefined;
   const [editingItem, setEditingItem] = useState<any>(null);
+  const [serverCmsStatus, setServerCmsStatus] = useState<'unknown' | 'available' | 'empty' | 'error'>('unknown');
 
   const tryServerLogin = async (pw: string): Promise<boolean> => {
     try {
@@ -45,6 +46,43 @@ export const Admin: React.FC = () => {
     }
   };
 
+  const refreshServerCmsStatus = async () => {
+    try {
+      const res = await fetch('/api/cms');
+      if (res.ok) {
+        setServerCmsStatus('available');
+        return;
+      }
+      if (res.status === 404) {
+        setServerCmsStatus('empty');
+        return;
+      }
+      setServerCmsStatus('error');
+    } catch {
+      setServerCmsStatus('error');
+    }
+  };
+
+  const syncNow = async () => {
+    try {
+      const payload = dataService.getData();
+      const resp = await fetch('/api/cms', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (resp.ok) {
+        await refreshServerCmsStatus();
+        alert('Synced to server successfully.');
+        return;
+      }
+      const text = await resp.text().catch(() => '<no body>');
+      alert(`Server sync failed (${resp.status}). ${text}`);
+    } catch (e) {
+      alert('Server sync failed (network error).');
+    }
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -53,12 +91,14 @@ export const Admin: React.FC = () => {
     const serverOk = await tryServerLogin(password);
     if (serverOk) {
       setIsAuthenticated(true);
+      refreshServerCmsStatus();
       return;
     }
 
     // 2) Fallback: client-side gate (legacy). Useful when server auth isn't configured yet.
     if (ADMIN_PASSWORD && password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
+      refreshServerCmsStatus();
       alert('Logged in locally. Note: server session not established, so global CMS saves may not persist until backend ADMIN_PASSWORD/SESSION_SECRET are configured.');
       return;
     }
@@ -224,8 +264,28 @@ export const Admin: React.FC = () => {
           <div>
             <h4 className="font-bold text-amber-900 mb-1">Local Session Notice</h4>
             <p className="text-sm text-amber-700 font-medium">
-              Changes made here are currently saved in your browser's local storage. In a full production environment, this console would be connected to a centralized database like Supabase or Firebase to sync changes globally.
+              Changes are saved locally and will attempt to sync to the server.
+              {serverCmsStatus === 'available' && ' Server CMS is available (global sync should work).'}
+              {serverCmsStatus === 'empty' && ' Server CMS is empty (seed it once using Sync to Server).'}
+              {serverCmsStatus === 'error' && ' Server CMS is not reachable or returned an error.'}
+              {serverCmsStatus === 'unknown' && ' Checking server status...'}
             </p>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={refreshServerCmsStatus}
+                className="bg-white text-amber-900 border border-amber-200 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-amber-100 transition-all"
+              >
+                Refresh Server Status
+              </button>
+              <button
+                type="button"
+                onClick={syncNow}
+                className="bg-amber-600 text-white px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-amber-700 transition-all"
+              >
+                Sync To Server
+              </button>
+            </div>
           </div>
         </div>
 
