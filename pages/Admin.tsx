@@ -31,18 +31,39 @@ export const Admin: React.FC = () => {
   const ADMIN_PASSWORD = (import.meta as any).env?.VITE_ADMIN_PASSWORD as string | undefined;
   const [editingItem, setEditingItem] = useState<any>(null);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const tryServerLogin = async (pw: string): Promise<boolean> => {
+    try {
+      const resp = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pw })
+      });
+      if (resp.ok) return true;
+      return false;
+    } catch {
+      return false;
+    }
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!ADMIN_PASSWORD) {
-      alert('Admin password is not configured for this deployment.');
+
+    // 1) Prefer server-side login (sets an HttpOnly cookie) when available.
+    // This is what enables production saves to persist globally.
+    const serverOk = await tryServerLogin(password);
+    if (serverOk) {
+      setIsAuthenticated(true);
       return;
     }
-    // In a real production app, this would be a secure API call to a server-side auth service.
+
+    // 2) Fallback: client-side gate (legacy). Useful when server auth isn't configured yet.
     if (ADMIN_PASSWORD && password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
-    } else {
-      alert('Invalid security credential. Access denied.');
+      alert('Logged in locally. Note: server session not established, so global CMS saves may not persist until backend ADMIN_PASSWORD/SESSION_SECRET are configured.');
+      return;
     }
+
+    alert('Invalid security credential. Access denied.');
   };
 
   const refreshData = () => setData(dataService.getData());

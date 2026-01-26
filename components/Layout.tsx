@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Linkedin, Instagram, Check } from 'lucide-react';
-import { dataService } from '../services/dataService';
+import { dataService, syncWithServer } from '../services/dataService';
 import { BIRLogo } from './Logo';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -11,13 +11,24 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const [newsletterSent, setNewsletterSent] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const location = useLocation();
-  const data = dataService.getData();
+  const [data, setData] = useState(() => dataService.getData());
   const { settings } = data;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      await syncWithServer();
+      if (!cancelled) setData(dataService.getData());
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {

@@ -1,7 +1,10 @@
 const express = require('express');
 const cors = require('cors');
+const crypto = require('crypto');
 
 const app = express();
+// Trust proxy headers (Cloud Run / Cloudflare) so req.secure works
+app.set('trust proxy', 1);
 app.use(cors());
 app.use(express.json());
 
@@ -104,6 +107,144 @@ app.get('/healthz', (req, res) => {
 
 
 const PORT = process.env.PORT || 4000;
+
+// ---- Admin session (cookie) auth ----
+// Configure these on the server (Cloud Run):
+// - ADMIN_PASSWORD: the admin password
+// - SESSION_SECRET: random long secret used to sign session tokens
+// Optional: keep using ADMIN_API_TOKEN (header) for automation/worker usage.
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+const SESSION_SECRET = process.env.SESSION_SECRET || '';
+const SESSION_COOKIE_NAME = 'bir_admin_session';
+const SESSION_TTL_MS = parseInt(process.env.SESSION_TTL_MS || '') || 7 * 24 * 60 * 60 * 1000; // 7 days
+
+function base64UrlEncode(input) {
+  return Buffer.from(input)
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/g, '');
+}
+
+function base64UrlDecode(input) {
+  const b64 = input.replace(/-/g, '+').replace(/_/g, '/');
+  const pad = b64.length % 4 === 0 ? '' : '='.repeat(4 - (b64.length % 4));
+  return Buffer.from(b64 + pad, 'base64').toString('utf8');
+}
+
+function signHmac(payload, secret) {
+  return crypto.createHmac('sha256', secret).update(payload).digest('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/g, '');
+}
+
+function createSessionToken() {
+  if (!SESSION_SECRET) return null;
+  const data = { v: 1, exp: Date.now() + SESSION_TTL_MS };
+  const payload = base64UrlEncode(JSON.stringify(data));
+  const sig = signHmac(payload, SESSION_SECRET);
+  return `${payload}.${sig}`;
+}
+
+function parseCookies(req) {
+  const header = req.headers && req.headers.cookie;
+  const out = {};
+  if (!header) return out;
+  const parts = header.split(';');
+  for (const part of parts) {
+    const idx = part.indexOf('=');
+    if (idx === -1) continue;
+    const key = part.slice(0, idx).trim();
+    const val = part.slice(idx + 1).trim();
+    if (key) out[key] = decodeURIComponent(val);
+  }
+  return out;
+}
+
+function verifySessionToken(token) {
+  if (!token || !SESSION_SECRET) return false;
+  const [payload, sig] = token.split('.');
+  if (!payload || !sig) return false;
+  const expected = signHmac(payload, SESSION_SECRET);
+  try {
+    const a = Buffer.from(sig);
+    const b = Buffer.from(expected);
+    if (a.length !== b.length) return false;
+    if (!crypto.timingSafeEqual(a, b)) return false;
+  } catch {
+    return false;
+  }
+  try {
+    const decoded = JSON.parse(base64UrlDecode(payload));
+    if (!decoded || typeof decoded.exp !== 'number') return false;
+    return Date.now() < decoded.exp;
+  } catch {
+    return false;
+  }
+}
+
+function isHttps(req) {
+  if (req.secure) return true;
+  const proto = (req.headers['x-forwarded-proto'] || '').toString().toLowerCase();
+  return proto === 'https';
+}
+
+function requireAdmin(req, res, next) {
+  const ADMIN_API_TOKEN = process.env.ADMIN_API_TOKEN;
+
+  // 1) Header token (useful for internal tooling / workers)
+  if (ADMIN_API_TOKEN) {
+    const provided = req.headers['x-admin-token'] || req.headers['x-admin-token'.toLowerCase()];
+    if (provided && provided === ADMIN_API_TOKEN) return next();
+  }
+
+  // 2) Signed session cookie
+  const cookies = parseCookies(req);
+  const session = cookies[SESSION_COOKIE_NAME];
+  if (verifySessionToken(session)) return next();
+
+  // 3) If no server-side protection configured at all, allow (simple setups)
+  if (!ADMIN_API_TOKEN && !ADMIN_PASSWORD) return next();
+
+  return res.status(401).json({ error: 'Unauthorized' });
+}
+
+// Admin auth endpoints
+app.post('/api/admin/login', (req, res) => {
+  try {
+    if (!ADMIN_PASSWORD) {
+      return res.status(500).json({ error: 'ADMIN_PASSWORD not configured on server' });
+    }
+    if (!SESSION_SECRET) {
+      return res.status(500).json({ error: 'SESSION_SECRET not configured on server' });
+    }
+    const { password } = req.body || {};
+    if (!password || password !== ADMIN_PASSWORD) {
+      return res.status(401).json({ error: 'Invalid credential' });
+    }
+
+    const token = createSessionToken();
+    if (!token) {
+      return res.status(500).json({ error: 'Unable to create session' });
+    }
+
+    const secure = isHttps(req);
+    const cookie = `${SESSION_COOKIE_NAME}=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${Math.floor(SESSION_TTL_MS / 1000)}${secure ? '; Secure' : ''}`;
+    res.setHeader('Set-Cookie', cookie);
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error('POST /api/admin/login error', err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.post('/api/admin/logout', (req, res) => {
+  const secure = isHttps(req);
+  const cookie = `${SESSION_COOKIE_NAME}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${secure ? '; Secure' : ''}`;
+  res.setHeader('Set-Cookie', cookie);
+  res.json({ ok: true });
+});
 
 const fs = require('fs');
 const path = require('path');
@@ -219,16 +360,8 @@ app.get('/api/cms', async (req, res) => {
   }
 });
 
-app.put('/api/cms', async (req, res) => {
+app.put('/api/cms', requireAdmin, async (req, res) => {
   console.log('PUT /api/cms called from', req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress);
-  const ADMIN_API_TOKEN = process.env.ADMIN_API_TOKEN;
-  if (ADMIN_API_TOKEN) {
-    const provided = req.headers['x-admin-token'] || req.headers['x-admin-token'.toLowerCase()];
-    if (!provided || provided !== ADMIN_API_TOKEN) {
-      console.warn('Unauthorized attempt to PUT /api/cms from', req.ip);
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-  }
   try {
     const payload = req.body;
     if (firestore) {
