@@ -25,12 +25,18 @@ export const Admin: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'settings' | 'projects' | 'publications' | 'submissions' | 'enrollments'>('settings');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
-  // Read admin password from environment variable. Set VITE_ADMIN_PASSWORD in .env.local
+  // Read admin password from a Vite build-time env var.
+  // Local dev: set VITE_ADMIN_PASSWORD in .env.local
+  // Cloudflare Pages: set VITE_ADMIN_PASSWORD as a Production environment variable and redeploy
   const ADMIN_PASSWORD = (import.meta as any).env?.VITE_ADMIN_PASSWORD as string | undefined;
   const [editingItem, setEditingItem] = useState<any>(null);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!ADMIN_PASSWORD) {
+      alert('Admin password is not configured for this deployment.');
+      return;
+    }
     // In a real production app, this would be a secure API call to a server-side auth service.
     if (ADMIN_PASSWORD && password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
@@ -131,7 +137,7 @@ export const Admin: React.FC = () => {
             </button>
             {!ADMIN_PASSWORD && (
               <p className="text-[10px] text-center text-amber-200 font-bold uppercase tracking-widest">
-                Admin password not configured. Set `VITE_ADMIN_PASSWORD` in .env.local for production.
+                Admin password not configured. Set VITE_ADMIN_PASSWORD in Cloudflare Pages (Production env vars) and redeploy.
               </p>
             )}
           </form>
