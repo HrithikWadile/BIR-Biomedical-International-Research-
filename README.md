@@ -21,11 +21,8 @@ This repository is a complete full-stack deployment with:
 
 ## Screenshots
 
-
-```md
 ![BIR Research — Website](assets/images/website.png)
-```
-![Website](image.png)
+
 ---
 
 ## Key features
@@ -173,5 +170,7 @@ Full operational documentation:
 ## Links
 
 - Live site: https://birresearch.com/
+
+
 
 
