@@ -1,7 +1,3 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
-
 # BIR — Biomedical & International Research (Corporate Platform)
 
 Production-grade corporate website + admin console with a secure backend API, global CMS persistence, and CI/CD to Google Cloud Run.
@@ -25,23 +21,11 @@ This repository is a complete full-stack deployment with:
 
 ## Screenshots
 
-Add a screenshot here to make the repo pop on your resume.
-
-1) Capture a full-page screenshot of the live site (recommended tools)
-
-- Chrome DevTools → Command Menu → “Capture full size screenshot”
-- Or a browser extension like “GoFullPage”
-
-2) Save it into this repo (suggested path)
-
-- `assets/images/website.png`
-
-3) Update this README line to point to the image
 
 ```md
 ![BIR Research — Website](assets/images/website.png)
 ```
-
+![Website](image.png)
 ---
 
 ## Key features
