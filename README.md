@@ -31,7 +31,7 @@ This repository is a complete full-stack deployment with:
 
 - Multi-page marketing site (React Router)
 - Responsive UI + modern component structure
-- Admin console at `/#/admin`
+
 
 ### Backend API
 
