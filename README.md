@@ -143,10 +143,6 @@ Frontend pipeline:
 2. Cloudflare Pages builds `npm run build`
 3. Publishes `dist/`
 
-Full operational documentation:
-
-- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
-
 ---
 
 ## Operational checklist
