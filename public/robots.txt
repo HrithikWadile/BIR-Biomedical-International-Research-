@@ -1,0 +1,16 @@
+# BIR Research — robots.txt
+# https://birresearch.com
+
+User-agent: *
+Allow: /
+
+# Block admin and backend API routes from indexing
+Disallow: /admin
+Disallow: /api/
+Disallow: /enroll/
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 10
+
+# Sitemap location
+Sitemap: https://birresearch.com/sitemap.xml

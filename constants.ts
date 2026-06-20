@@ -54,7 +54,7 @@ export const INITIAL_DATA: CMSData = {
       id: "pub-aki",
       title: "Predictive Performance and Clinical Utility of AI for Hospital-Acquired AKI",
       category: "Nephrology & AI",
-      image: "https://images.unsplash.com/photo-1579154273811-c9111481896d?auto=format&fit=crop&q=80&w=1000",
+      image: "https://images.unsplash.com/photo-1576671081837-49000212a370?auto=format&fit=crop&q=80&w=1000",
       problem: "Identifying patients at high risk for Hospital-Acquired Acute Kidney Injury (HA-AKI) early enough for effective intervention remains a significant challenge in critical care.",
       solution: "A systematic review and meta-analysis evaluating the predictive performance and clinical utility of diverse AI models in the inpatient setting.",
       outcome: "Project in Progress. Aims to synthesize global evidence to define the current state of AI implementation in nephrology.",

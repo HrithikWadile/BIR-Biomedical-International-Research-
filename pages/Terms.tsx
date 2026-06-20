@@ -2,7 +2,7 @@ import React from 'react';
 
 export const Terms: React.FC = () => {
   return (
-    <div className="container mx-auto px-6 py-24 max-w-4xl">
+    <div className="container mx-auto px-6 pt-36 pb-24 max-w-4xl">
       <h1 className="text-4xl font-black text-[#0f365d] mb-6">Terms of Service</h1>
       <p className="mb-4">Last updated: January 22, 2026</p>
 
