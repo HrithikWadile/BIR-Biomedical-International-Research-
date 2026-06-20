@@ -1,13 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Linkedin, Instagram, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, Linkedin, Instagram, Check, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { dataService, syncWithServer } from '../services/dataService';
 import { BIRLogo } from './Logo';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled]     = useState(false);
   const [newsletterSent, setNewsletterSent] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const location = useLocation();
@@ -15,9 +16,9 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const { settings } = data;
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => {
@@ -26,9 +27,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       await syncWithServer();
       if (!cancelled) setData(dataService.getData());
     })();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -46,150 +45,295 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   };
 
   const navLinks = [
-    { name: 'About', path: '/about' },
-    { name: 'Services', path: '/services' },
-    { name: 'Case Studies', path: '/case-studies' },
-    { name: 'Research', path: '/research' },
-    { name: 'Contact', path: '/contact' },
+    { name: 'About',       path: '/about' },
+    { name: 'Services',    path: '/services' },
+    { name: 'Case Studies',path: '/case-studies' },
+    { name: 'Research',    path: '/research' },
+    { name: 'Contact',     path: '/contact' },
   ];
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'glass border-b border-slate-200 py-2 shadow-sm' : 'bg-transparent py-6'}`}>
+
+      {/* ── Navigation ── */}
+      <nav className={`fixed w-full z-50 transition-all duration-500 ${
+        scrolled
+          ? 'bg-white/96 backdrop-blur-xl border-b border-slate-100 py-3 shadow-[0_2px_24px_rgba(0,0,0,0.07)]'
+          : 'bg-transparent py-5'
+      }`}>
         <div className="container mx-auto px-6 flex justify-between items-center">
-          <Link to="/" className="group transition-transform hover:scale-[1.02] flex items-center">
-            <BIRLogo className="h-12 md:h-14 lg:h-16" />
+
+          {/* Logo */}
+          <Link to="/" className="block transition-opacity hover:opacity-80">
+            <BIRLogo className="h-10 md:h-12 lg:h-14" />
           </Link>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <Link 
-                key={link.path} 
+          {/* Desktop links */}
+          <div className="hidden md:flex items-center gap-9">
+            {navLinks.map(link => (
+              <Link
+                key={link.path}
                 to={link.path}
-                className={`text-sm font-semibold transition-colors hover:text-blue-700 ${location.pathname === link.path ? 'text-blue-800 underline underline-offset-8 decoration-2' : scrolled ? 'text-slate-600' : 'text-slate-700'}`}
+                className={`relative text-sm font-medium transition-colors pb-1 ${
+                  location.pathname === link.path
+                    ? 'text-[#0f365d]'
+                    : scrolled
+                      ? 'text-slate-500 hover:text-[#0f365d]'
+                      : 'text-slate-600 hover:text-[#0f365d]'
+                }`}
+                style={{ fontFamily: 'Space Grotesk, Inter, sans-serif', letterSpacing: '0.01em' }}
               >
                 {link.name}
+                {location.pathname === link.path && (
+                  <motion.span
+                    layoutId="nav-underline"
+                    className="absolute bottom-0 left-0 right-0 h-[2px] rounded-full"
+                    style={{ background: '#C9A84C' }}
+                    transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
+                  />
+                )}
               </Link>
             ))}
+
+            <Link to="/contact">
+              <motion.button
+                whileHover={{ scale: 1.03, boxShadow: '0 8px 24px rgba(15,54,93,0.25)' }}
+                whileTap={{ scale: 0.97 }}
+                className="bg-[#0f365d] text-white text-sm px-5 py-2.5 rounded-lg font-semibold shadow-[0_4px_14px_rgba(15,54,93,0.18)] hover:bg-[#1a4a7a] transition-colors"
+                style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}
+              >
+                Get in Touch
+              </motion.button>
+            </Link>
           </div>
 
-          {/* Mobile Toggle */}
-          <button className="md:hidden text-slate-900" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          {/* Mobile toggle */}
+          <button
+            aria-label="Toggle menu"
+            className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 bg-white/80 text-[#0f365d] transition-colors hover:border-[#0f365d]"
+            onClick={() => setIsMenuOpen(v => !v)}
+          >
+            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden glass border-b border-slate-200 absolute top-full left-0 w-full animate-in slide-in-from-top duration-300">
-            <div className="flex flex-col p-6 space-y-4">
-              {navLinks.map((link) => (
-                <Link key={link.path} to={link.path} className="text-lg font-bold text-[#0f365d] border-b border-slate-100 pb-2">
-                  {link.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Mobile slide-down menu */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              className="md:hidden absolute top-full left-0 w-full bg-white border-b border-slate-100 shadow-lg"
+            >
+              <div className="container mx-auto px-6 py-6 space-y-0.5">
+                {navLinks.map((link, i) => (
+                  <motion.div
+                    key={link.path}
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.04 }}
+                  >
+                    <Link
+                      to={link.path}
+                      className={`flex items-center justify-between py-4 border-b border-slate-50 text-base font-semibold ${
+                        location.pathname === link.path ? 'text-[#0f365d]' : 'text-slate-700'
+                      }`}
+                      style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}
+                    >
+                      {link.name}
+                      <ArrowRight size={16} className="text-slate-300" />
+                    </Link>
+                  </motion.div>
+                ))}
+                <div className="pt-5">
+                  <Link to="/contact" className="block">
+                    <button
+                      className="w-full bg-[#0f365d] text-white py-3.5 rounded-xl font-semibold text-sm uppercase tracking-widest"
+                      style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}
+                    >
+                      Get in Touch
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
-      <main className="flex-grow">
-        {children}
-      </main>
+      {/* ── Page content ── */}
+      <main className="flex-grow">{children}</main>
 
-      {/* Footer */}
-      <footer className="bg-[#0f365d] text-slate-300 py-20">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-            <div className="col-span-1 md:col-span-1">
-              <Link to="/" className="mb-8 block">
-                <BIRLogo className="h-12" light />
+      {/* ── Footer ── */}
+      <footer className="bg-[#0a1628] text-slate-400 pt-20 pb-10 relative overflow-hidden">
+        {/* Dot pattern texture */}
+        <div className="absolute inset-0 opacity-[0.035] pointer-events-none select-none" aria-hidden="true">
+          <svg width="100%" height="100%">
+            <defs>
+              <pattern id="footer-dots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="1.2" fill="white" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#footer-dots)" />
+          </svg>
+        </div>
+
+        {/* Glow accent */}
+        <div
+          className="absolute top-0 left-1/4 w-[500px] h-[200px] pointer-events-none opacity-10"
+          style={{ background: 'radial-gradient(ellipse, #C9A84C 0%, transparent 70%)' }}
+        />
+
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16 pb-16 border-b border-white/[0.07]">
+
+            {/* Brand column */}
+            <div className="lg:col-span-1">
+              <Link to="/" className="mb-6 block w-fit">
+                <BIRLogo className="h-10" light />
               </Link>
-              <p className="text-slate-400 text-sm leading-relaxed mb-6">
-                {settings.heroText.slice(0, 120)}...
+              <p className="body-text text-sm mb-8 max-w-[240px]" style={{ color: '#64748b' }}>
+                {settings.heroText.slice(0, 115)}…
               </p>
-              <div className="flex space-x-5 items-center">
-                <a href={settings.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" title="LinkedIn">
-                  <Linkedin size={20} />
-                </a>
-                <a href={settings.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" title="Instagram">
-                  <Instagram size={20} />
-                </a>
-                <a href={settings.socialLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors" title="WhatsApp Community">
-                  <svg 
-                    width="20" 
-                    height="20" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round"
+              <div className="flex gap-3">
+                {[
+                  { href: settings.socialLinks.linkedin, icon: <Linkedin size={15} />, label: 'LinkedIn' },
+                  { href: settings.socialLinks.instagram, icon: <Instagram size={15} />, label: 'Instagram' },
+                  {
+                    href: settings.socialLinks.whatsapp,
+                    label: 'WhatsApp',
+                    icon: (
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-11.7 8.38 8.38 0 0 1 3.8.9L21 3l-1.5 6.5Z" />
+                      </svg>
+                    ),
+                  },
+                ].map(s => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={s.label}
+                    className="w-9 h-9 rounded-lg border border-white/[0.08] flex items-center justify-center text-slate-500 hover:text-white hover:border-white/20 hover:bg-white/5 transition-all"
                   >
-                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-11.7 8.38 8.38 0 0 1 3.8.9L21 3l-1.5 6.5Z" />
-                    <path d="M12 8v8" />
-                    <path d="M8 12h8" />
-                  </svg>
-                </a>
+                    {s.icon}
+                  </a>
+                ))}
               </div>
             </div>
 
+            {/* Resources */}
             <div>
-              <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">Resources</h4>
-              <ul className="space-y-4 text-sm font-medium">
-                <li><Link to="/research" className="hover:text-white transition-colors">Insights & Articles</Link></li>
-                <li><Link to="/case-studies" className="hover:text-white transition-colors">Case Studies</Link></li>
-                <li><Link to="/about" className="hover:text-white transition-colors">Annual Reports</Link></li>
-                <li><Link to="/contact" className="hover:text-white transition-colors">Contact Press</Link></li>
+              <h4
+                className="text-white/70 font-semibold mb-6 text-[10px] uppercase tracking-[0.28em]"
+                style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}
+              >
+                Resources
+              </h4>
+              <ul className="space-y-3.5">
+                {[
+                  { label: 'Insights & Articles', path: '/research' },
+                  { label: 'Case Studies',         path: '/case-studies' },
+                  { label: 'Annual Reports',       path: '/about' },
+                  { label: 'Contact Press',        path: '/contact' },
+                ].map(item => (
+                  <li key={item.label}>
+                    <Link
+                      to={item.path}
+                      className="text-sm text-slate-500 hover:text-white transition-colors flex items-center gap-1.5 group"
+                    >
+                      {item.label}
+                      <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
 
+            {/* Company */}
             <div>
-              <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">Company</h4>
-              <ul className="space-y-4 text-sm font-medium">
-                <li><Link to="/about" className="hover:text-white transition-colors">Our Story</Link></li>
-                <li><Link to="/services" className="hover:text-white transition-colors">Capabilities</Link></li>
-                <li><Link to="/about" className="hover:text-white transition-colors">Careers</Link></li>
-                <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+              <h4
+                className="text-white/70 font-semibold mb-6 text-[10px] uppercase tracking-[0.28em]"
+                style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}
+              >
+                Company
+              </h4>
+              <ul className="space-y-3.5">
+                {[
+                  { label: 'Our Story',    path: '/about' },
+                  { label: 'Capabilities', path: '/services' },
+                  { label: 'Careers',      path: '/about' },
+                  { label: 'Privacy Policy', path: '/privacy' },
+                ].map(item => (
+                  <li key={item.label}>
+                    <Link
+                      to={item.path}
+                      className="text-sm text-slate-500 hover:text-white transition-colors flex items-center gap-1.5 group"
+                    >
+                      {item.label}
+                      <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
 
+            {/* Newsletter */}
             <div>
-              <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">Intelligence Newsletter</h4>
-              <p className="text-sm text-slate-400 mb-4">Subscribe for quarterly biomedical breakthroughs.</p>
-              <form onSubmit={handleNewsletter} className="flex">
-                <input 
-                  type="email" 
+              <h4
+                className="text-white/70 font-semibold mb-2 text-[10px] uppercase tracking-[0.28em]"
+                style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}
+              >
+                Intelligence Newsletter
+              </h4>
+              <p className="text-sm text-slate-500 mt-3 mb-5 leading-relaxed">
+                Quarterly biomedical breakthroughs delivered to your inbox.
+              </p>
+              <form onSubmit={handleNewsletter} className="space-y-3">
+                <input
+                  type="email"
                   value={newsletterEmail}
-                  onChange={(e) => setNewsletterEmail(e.target.value)}
-                  placeholder="Email address" 
-                  className="bg-[#1a4a7a] border-none rounded-l-lg px-4 py-2 w-full text-white text-sm focus:ring-1 focus:ring-blue-400 placeholder-slate-400"
+                  onChange={e => setNewsletterEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  required
+                  className="w-full bg-white/[0.05] border border-white/[0.09] rounded-lg px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-[#C9A84C]/50 focus:bg-white/10 transition-all"
                 />
-                <button 
+                <button
                   type="submit"
                   disabled={newsletterSent}
-                  className={`${newsletterSent ? 'bg-green-600' : 'bg-blue-600 hover:bg-blue-500'} text-white rounded-r-lg px-4 py-2 transition-all font-bold flex items-center justify-center min-w-[70px]`}
+                  className={`w-full py-3 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+                    newsletterSent
+                      ? 'bg-green-600 text-white'
+                      : 'bg-[#C9A84C] text-white hover:bg-[#b8952d] shadow-[0_4px_16px_rgba(201,168,76,0.3)]'
+                  }`}
+                  style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}
                 >
-                  {newsletterSent ? <Check size={18} /> : 'Join'}
+                  {newsletterSent ? <><Check size={15} /> Subscribed!</> : 'Join the Registry'}
                 </button>
               </form>
-              {newsletterSent && <p className="text-[10px] text-green-400 mt-2 font-bold uppercase tracking-widest">Added to registry!</p>}
             </div>
           </div>
-          
-          <div className="border-t border-slate-700/50 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-400">
-            <p>© {new Date().getFullYear()} {settings.companyName}. All rights reserved.</p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link to="/terms" className="hover:text-slate-200">Terms of Service</Link>
-              <Link to="/privacy" className="hover:text-slate-200">Privacy Policy</Link>
+
+          {/* Bottom bar */}
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="label-text text-slate-600">
+              © {new Date().getFullYear()} {settings.companyName}. All rights reserved.
+            </p>
+            <div className="flex gap-6">
+              <Link to="/terms"   className="text-xs text-slate-600 hover:text-white transition-colors">Terms</Link>
+              <Link to="/privacy" className="text-xs text-slate-600 hover:text-white transition-colors">Privacy</Link>
             </div>
           </div>
-          
-          <div className="mt-12 text-center">
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 opacity-70">
-              Created By. Hrithik Wadile
+
+          <div className="mt-10 text-center">
+            <p
+              className="text-[10px] font-bold uppercase tracking-[0.32em] text-slate-700"
+              style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}
+            >
+              Crafted by Hrithik Wadile
             </p>
           </div>
         </div>

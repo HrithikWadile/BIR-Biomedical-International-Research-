@@ -62,10 +62,10 @@ export const Enroll: React.FC = () => {
   if (!paper) return null;
 
   return (
-    <div className="pt-32 pb-24 min-h-screen bg-slate-50">
+    <div className="pt-32 pb-24 min-h-screen bg-[#F8F6F2]">
       <div className="container mx-auto px-6">
-        <Link to="/case-studies" className="inline-flex items-center gap-2 text-blue-600 font-bold mb-8 hover:translate-x-[-4px] transition-transform">
-          <ArrowLeft size={18} /> Back to Repository
+        <Link to="/case-studies" className="inline-flex items-center gap-2 text-[#C9A84C] font-semibold mb-8 hover:gap-3 transition-all text-sm" style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}>
+          <ArrowLeft size={16} /> Back to Repository
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">

@@ -1,43 +1,348 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" prefix="og: https://ogp.me/ns#">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BIR Research | Biomedical & International Research Hub</title>
-    
-    <!-- Professional SEO -->
-    <meta name="description" content="Doctor-led research mentorship and collaboration specializing in high-impact systematic reviews and meta-analyses." />
-    <meta name="keywords" content="Biomedical Research, Meta-Analysis, Systematic Review, IMG Mentorship, Medical Publication" />
-    <meta property="og:title" content="BIR Research | Advancing Global Insights" />
-    <meta property="og:description" content="Join a global network of medical researchers led by Dr. Roshan." />
+
+    <!-- ═══════════════════════════════════════════════════════
+         PRIMARY META TAGS
+    ════════════════════════════════════════════════════════ -->
+    <title>BIR Research | Doctor-Led Biomedical Research Mentorship</title>
+    <meta name="title" content="BIR Research | Doctor-Led Biomedical Research Mentorship" />
+    <meta name="description" content="BIR Research is a doctor-led research mentorship organization specializing in systematic reviews and meta-analyses. We help IMGs, medical students, and early-career clinicians publish real, high-impact research under expert guidance." />
+    <meta name="keywords" content="BIR Research, Biomedical Research, Systematic Review, Meta-Analysis, IMG Mentorship, Medical Publication, Research Collaboration, Doctor-Led Research, ICMJE, Evidence-Based Medicine, Medical Students Research, Clinical Research India" />
+    <meta name="author" content="BIR Research" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="theme-color" content="#0f365d" />
+    <meta name="msapplication-TileColor" content="#0f365d" />
+    <meta name="language" content="English" />
+    <meta name="geo.region" content="IN-MH" />
+    <meta name="geo.placename" content="Nagpur, Maharashtra, India" />
+    <link rel="canonical" href="https://birresearch.com/" />
+
+    <!-- ═══════════════════════════════════════════════════════
+         OPEN GRAPH (Facebook, LinkedIn, WhatsApp)
+    ════════════════════════════════════════════════════════ -->
     <meta property="og:type" content="website" />
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <meta property="og:site_name" content="BIR Research" />
+    <meta property="og:title" content="BIR Research | Doctor-Led Biomedical Research Mentorship" />
+    <meta property="og:description" content="Join BIR Research — a doctor-led organization helping IMGs, medical students, and clinicians publish systematic reviews and meta-analyses in high-impact journals. Led by Dr. Roshan." />
+    <meta property="og:url" content="https://birresearch.com/" />
+    <meta property="og:image" content="https://birresearch.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="BIR Research — Doctor-Led Research Mentorship" />
+    <meta property="og:locale" content="en_IN" />
+
+    <!-- ═══════════════════════════════════════════════════════
+         TWITTER CARD
+    ════════════════════════════════════════════════════════ -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@BIRResearch" />
+    <meta name="twitter:creator" content="@BIRResearch" />
+    <meta name="twitter:title" content="BIR Research | Doctor-Led Biomedical Research Mentorship" />
+    <meta name="twitter:description" content="Doctor-led research mentorship specializing in systematic reviews and meta-analyses. Helping IMGs and clinicians publish real research." />
+    <meta name="twitter:image" content="https://birresearch.com/og-image.png" />
+    <meta name="twitter:image:alt" content="BIR Research" />
+
+    <!-- ═══════════════════════════════════════════════════════
+         FAVICON & TOUCH ICONS
+    ════════════════════════════════════════════════════════ -->
+    <link rel="icon" type="image/jpeg" href="/assets/images/bir-logo.jpeg" />
+    <link rel="apple-touch-icon" href="/assets/images/bir-logo.jpeg" />
+    <link rel="shortcut icon" href="/assets/images/bir-logo.jpeg" />
+
+    <!-- ═══════════════════════════════════════════════════════
+         FONTS & PERFORMANCE
+    ════════════════════════════════════════════════════════ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://esm.sh" />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- ═══════════════════════════════════════════════════════
+         STRUCTURED DATA — Organization + WebSite + MedicalOrganization
+    ════════════════════════════════════════════════════════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": ["Organization", "MedicalOrganization"],
+          "@id": "https://birresearch.com/#organization",
+          "name": "BIR Research",
+          "legalName": "Biomedical & International Research",
+          "alternateName": ["BIR", "BIR Research India"],
+          "description": "Doctor-led research mentorship and collaboration organization specializing in systematic reviews and meta-analyses. We guide IMGs, medical students, residents, and clinicians through publishable, contribution-based research under expert academic supervision.",
+          "url": "https://birresearch.com",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://birresearch.com/assets/images/bir-logo.jpeg",
+            "width": 400,
+            "height": 400
+          },
+          "image": "https://birresearch.com/og-image.png",
+          "foundingDate": "2023",
+          "founder": {
+            "@type": "Person",
+            "name": "Dr. Roshan",
+            "jobTitle": "Founder & Principal Investigator",
+            "worksFor": { "@id": "https://birresearch.com/#organization" }
+          },
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Nagpur",
+            "addressRegion": "Maharashtra",
+            "addressCountry": "IN"
+          },
+          "contactPoint": [
+            {
+              "@type": "ContactPoint",
+              "telephone": "+919096151632",
+              "email": "bir.research.in@gmail.com",
+              "contactType": "Research Inquiries",
+              "areaServed": "Worldwide",
+              "availableLanguage": ["English", "Hindi"]
+            }
+          ],
+          "sameAs": [
+            "https://www.linkedin.com/company/birresearch/",
+            "https://www.instagram.com/bir.research"
+          ],
+          "medicalSpecialty": [
+            "https://schema.org/Cardiovascular",
+            "https://schema.org/Renal",
+            "https://schema.org/Musculoskeletal",
+            "https://schema.org/PublicHealth"
+          ],
+          "knowsAbout": [
+            "Systematic Reviews",
+            "Meta-Analysis",
+            "Evidence-Based Medicine",
+            "ICMJE Authorship Guidelines",
+            "Medical Research Mentorship",
+            "Academic Publishing",
+            "Clinical Research",
+            "Biostatistics"
+          ],
+          "numberOfEmployees": {
+            "@type": "QuantitativeValue",
+            "minValue": 10,
+            "maxValue": 50
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://birresearch.com/#website",
+          "name": "BIR Research",
+          "url": "https://birresearch.com",
+          "description": "Doctor-led biomedical research mentorship platform — systematic reviews, meta-analyses, and academic publishing support.",
+          "inLanguage": "en-IN",
+          "publisher": { "@id": "https://birresearch.com/#organization" },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://birresearch.com/research?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "WebPage",
+          "@id": "https://birresearch.com/#webpage",
+          "url": "https://birresearch.com/",
+          "name": "BIR Research | Doctor-Led Biomedical Research Mentorship",
+          "description": "BIR Research is a doctor-led organization helping IMGs, medical students, and early-career clinicians publish systematic reviews and meta-analyses in high-impact journals.",
+          "isPartOf": { "@id": "https://birresearch.com/#website" },
+          "about": { "@id": "https://birresearch.com/#organization" },
+          "inLanguage": "en-IN"
+        },
+        {
+          "@type": "ProfessionalService",
+          "@id": "https://birresearch.com/#service",
+          "name": "BIR Research — Medical Research Mentorship Services",
+          "provider": { "@id": "https://birresearch.com/#organization" },
+          "serviceType": "Medical Research Mentorship",
+          "areaServed": "Worldwide",
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Research Services",
+            "itemListElement": [
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Systematic Review & Meta-Analysis",
+                  "description": "Full research lifecycle management for systematic reviews and meta-analyses following PRISMA and ICMJE guidelines."
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Research Mentorship for Trainees",
+                  "description": "Structured guidance for IMGs, medical students, and residents to gain real research experience and authorship."
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Institutional Collaborations",
+                  "description": "Strategic partnerships with academic institutions and senior consultants for evidence synthesis and manuscript development."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is BIR Research?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "BIR Research (Biomedical & International Research) is a doctor-led research mentorship and collaboration organization founded by Dr. Roshan. We specialize in systematic reviews and meta-analyses, helping IMGs, medical students, residents, and clinicians contribute to and publish in high-impact, indexed journals."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who can join BIR Research as a collaborator?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "BIR Research works with International Medical Graduates (IMGs), medical students, early-career clinicians, residents, and senior consultants. We welcome anyone who values structured mentorship, ethical authorship, and real academic contribution."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does authorship work at BIR Research?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Authorship at BIR Research is strictly contribution-based and follows ICMJE (International Committee of Medical Journal Editors) criteria. We do not offer ghost authorship, guaranteed authorship without contribution, or outsourced research. All collaborators earn their authorship through meaningful academic work."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What types of research does BIR conduct?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "BIR Research specializes in systematic reviews and meta-analyses across multiple medical domains including cardiology, nephrology, orthopedics, public health, and artificial intelligence in medicine. All projects follow rigorous PRISMA and COCHRANE methodological standards."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I enroll in a BIR Research project?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "You can browse our active research opportunities on the Case Studies page and submit an enrollment application. Selection is based on background alignment and available spots. You can also contact us directly for a research inquiry or to propose a new project."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════════
+         GLOBAL STYLES
+    ════════════════════════════════════════════════════════ -->
     <style>
+      /* Design System Variables */
+      :root {
+        --gold: #C9A84C;
+        --gold-rgb: 201, 168, 76;
+        --gold-light: rgba(201, 168, 76, 0.12);
+        --navy: #0f365d;
+        --navy-dark: #0a1628;
+        --navy-deep: #0a2540;
+        --cream: #F8F6F2;
+        --cream-dark: #F0EDE7;
+        --text-primary: #0a1628;
+        --text-secondary: #4B5563;
+      }
+
+      *, *::before, *::after { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+
       body {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background-color: var(--cream);
+        color: var(--text-primary);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
       }
-      h1, h2, h3, .serif {
-        font-family: 'Playfair Display', serif;
+
+      h1, h2, h3, .font-serif { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; }
+      .font-display { font-family: 'Space Grotesk', Inter, system-ui, sans-serif; }
+
+      .glass { background: rgba(255,255,255,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+      .glass-dark { background: rgba(10,22,40,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+
+      .text-gold { color: var(--gold); }
+      .bg-gold { background-color: var(--gold); }
+      .border-gold { border-color: var(--gold); }
+
+      ::-webkit-scrollbar { width: 5px; }
+      ::-webkit-scrollbar-track { background: var(--cream); }
+      ::-webkit-scrollbar-thumb { background: var(--navy); border-radius: 3px; }
+      ::-webkit-scrollbar-thumb:hover { background: #1a4a7a; }
+
+      ::selection { background: var(--gold); color: #fff; }
+      ::-moz-selection { background: var(--gold); color: #fff; }
+
+      @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+      .animate-float { animation: float 6s ease-in-out infinite; }
+      .animate-float-slow { animation: float 9s ease-in-out infinite 1.5s; }
+
+      @keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+      .animate-marquee { animation: marquee 28s linear infinite; }
+
+      @keyframes shimmer-gold { 0%,100%{opacity:.5} 50%{opacity:1} }
+      .animate-gold { animation: shimmer-gold 3s ease-in-out infinite; }
+
+      @keyframes spin-slow { to{transform:rotate(360deg)} }
+      .animate-spin-slow { animation: spin-slow 20s linear infinite; }
+
+      a, button { transition-property: color,background-color,border-color,box-shadow,transform,opacity; transition-duration: 200ms; }
+
+      .scrollbar-hide::-webkit-scrollbar { display: none; }
+      .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+      /* ── Typography utilities ── */
+      h1, h2 { font-feature-settings: "kern","liga"; text-rendering: optimizeLegibility; letter-spacing: -0.02em; }
+
+      .gold-italic { font-style: italic; color: #C9A84C; font-family: 'Playfair Display', serif; }
+
+      .heading-gradient {
+        background: linear-gradient(135deg, #0a1628 0%, #1e5080 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
-      .glass {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-      }
-      .scrollbar-hide::-webkit-scrollbar {
-        display: none;
-      }
-      ::selection {
-        background: #0f365d;
-        color: white;
-      }
+
+      .text-elegant { font-size: 16px; line-height: 1.88; color: #64748B; font-weight: 300; letter-spacing: 0.012em; }
+      .body-text { font-size: 15.5px; line-height: 1.85; font-weight: 300; color: #64748B; }
+
+      .num-stat { font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+
+      .pull-quote { font-family: 'Playfair Display', serif; font-style: italic; font-size: clamp(1.25rem, 2.5vw, 1.75rem); line-height: 1.6; }
+
+      .label-text { font-family: 'Space Grotesk', Inter, sans-serif; font-size: 10.5px; font-weight: 600; letter-spacing: 0.32em; text-transform: uppercase; }
+
+      /* Responsive clamps */
+      .text-fluid-xl  { font-size: clamp(2.4rem, 5vw, 4.5rem); }
+      .text-fluid-2xl { font-size: clamp(3rem, 7vw, 6rem); }
     </style>
-  <script type="importmap">
+
+    <script type="importmap">
 {
   "imports": {
     "react-router-dom": "https://esm.sh/react-router-dom@^7.12.0",
@@ -49,10 +354,9 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
-</head>
-  <body class="bg-slate-50 text-slate-900 overflow-x-hidden">
+  </head>
+  <body>
     <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
-</body>
+    <script type="module" src="/index.tsx"></script>
+  </body>
 </html>

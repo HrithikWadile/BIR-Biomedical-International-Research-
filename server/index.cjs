@@ -8,6 +8,12 @@ app.set('trust proxy', 1);
 app.use(cors());
 app.use(express.json());
 
+// Prevent caching of dynamic API responses
+app.use('/api', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+});
+
 // ---- Rate limiter and request logging ----
 const RATE_LIMIT_WINDOW_MS = parseInt(process.env.RATE_LIMIT_WINDOW_MS || '') || 15 * 60 * 1000; // 15 minutes
 const RATE_LIMIT_MAX = parseInt(process.env.RATE_LIMIT_MAX || '') || 200; // max requests per window per IP
@@ -98,10 +104,12 @@ app.use(requestLogger);
 
 // Basic health/root endpoints (useful on Cloud Run)
 app.get('/', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
   res.status(200).type('text/plain').send('OK');
 });
 
 app.get('/healthz', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
   res.status(200).json({ ok: true, ts: new Date().toISOString() });
 });
 
