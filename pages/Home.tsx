@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { dataService } from '../services/dataService';
-import { SectionTitle } from '../components/UI';
+import { SectionTitle, BlurText, CurvedLines } from '../components/UI';
 import { useSEO, SITE_URL } from '../hooks/useSEO';
 
 /* ── Animated counter ── */
@@ -97,6 +97,10 @@ export const Home: React.FC = () => {
         <div className="absolute top-32 right-[12%] w-72 h-72 rounded-full border border-[#0f365d]/[0.06] pointer-events-none animate-spin-slow" />
         <div className="absolute top-44 right-[15%] w-40 h-40 rounded-full border border-[#C9A84C]/[0.1] pointer-events-none" />
 
+        {/* Pulsing curved lines — ripple in from both edges */}
+        <CurvedLines side="left" className="hidden lg:block" color="rgba(201,168,76,0.28)" count={10} baseWidth={50} step={14} />
+        <CurvedLines side="right" className="hidden lg:block" color="rgba(15,54,93,0.12)" count={10} baseWidth={50} step={14} />
+
         <div className="container mx-auto px-6 relative z-10 pt-32 pb-12">
           <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-16 items-center">
 
@@ -104,8 +108,8 @@ export const Home: React.FC = () => {
             <div>
               {/* Badge */}
               <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 16, filter: 'blur(10px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                 transition={{ duration: 0.6 }}
                 className="inline-flex items-center gap-2.5 mb-8 px-4 py-2 rounded-full border text-[11px] font-semibold uppercase tracking-[0.1em]"
                 style={{
@@ -122,31 +126,30 @@ export const Home: React.FC = () => {
                 Doctor-Led Research Mentorship
               </motion.div>
 
-              {/* Heading */}
-              <motion.h1
-                initial={{ opacity: 0, y: 32 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.1 }}
-                className="font-bold leading-[1.04] mb-7 heading-gradient"
+              {/* Heading — cinematic word-by-word blur-in */}
+              <h1
+                className="font-bold leading-[1.04] mb-7 text-[#0a1628]"
                 style={{ fontSize: 'clamp(2.8rem, 6vw, 5.4rem)' }}
               >
                 {(() => {
                   const words = settings.tagline.split(' ');
                   const cut = Math.max(2, Math.floor(words.length * 0.62));
                   return (
-                    <>
-                      {words.slice(0, cut).join(' ')}{' '}
-                      <em className="gold-italic not-italic">{words.slice(cut).join(' ')}</em>
-                    </>
+                    <BlurText
+                      text={settings.tagline}
+                      highlightLast={words.length - cut}
+                      delay={0.15}
+                      stagger={0.11}
+                    />
                   );
                 })()}
-              </motion.h1>
+              </h1>
 
               {/* Subtext */}
               <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.2 }}
+                initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{ duration: 0.7, delay: 0.55 }}
                 className="text-elegant mb-10 max-w-lg"
               >
                 {settings.heroText}
@@ -154,9 +157,9 @@ export const Home: React.FC = () => {
 
               {/* CTAs */}
               <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
+                initial={{ opacity: 0, y: 16, filter: 'blur(10px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{ duration: 0.6, delay: 0.75 }}
                 className="flex flex-col sm:flex-row gap-4"
               >
                 <Link to="/about">
@@ -171,12 +174,28 @@ export const Home: React.FC = () => {
                 </Link>
                 <Link to="/contact">
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
+                    whileHover={{ y: -2, boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}
                     whileTap={{ scale: 0.97 }}
-                    className="px-8 py-4 rounded-xl font-semibold text-[15px] border border-slate-200 bg-white text-slate-700 hover:border-[#0f365d] hover:text-[#0f365d] transition-all"
-                    style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}
+                    className="flex items-center gap-3 bg-white rounded-full p-1.5 pr-6 transition-shadow"
+                    style={{ border: '4px solid #EFECE4' }}
                   >
-                    Research Inquiry
+                    <img
+                      src="/favicon.png"
+                      alt="BIR Research team"
+                      className="w-10 h-10 rounded-full object-cover border border-slate-100"
+                    />
+                    <span className="text-left">
+                      <span
+                        className="block text-sm font-semibold text-[#0a1628] leading-tight"
+                        style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}
+                      >
+                        Talk to our team
+                      </span>
+                      <span className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
+                        <span className="w-2 h-2 rounded-full bg-[#1DCC5D] inline-block" />
+                        Replies within 24 hours
+                      </span>
+                    </span>
                   </motion.button>
                 </Link>
               </motion.div>
@@ -184,8 +203,8 @@ export const Home: React.FC = () => {
 
             {/* ── Right: Image ── */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.93 }}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, scale: 0.93, filter: 'blur(12px)' }}
+              animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
               transition={{ duration: 1, delay: 0.15 }}
               className="hidden lg:block relative"
             >
@@ -208,10 +227,10 @@ export const Home: React.FC = () => {
 
               {/* Floating card — top left */}
               <motion.div
-                initial={{ opacity: 0, x: -24 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.7, duration: 0.6 }}
-                className="absolute -left-10 top-10 bg-white rounded-2xl p-5 shadow-[0_8px_32px_rgba(0,0,0,0.1)] border border-slate-100 animate-float"
+                initial={{ opacity: 0, x: -24, filter: 'blur(8px)' }}
+                animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                transition={{ delay: 0.9, duration: 0.6 }}
+                className="absolute -left-10 top-10 liquid-glass rounded-2xl p-5 animate-float"
               >
                 <p
                   className="text-3xl font-bold text-[#0f365d] mb-0.5"
@@ -222,10 +241,10 @@ export const Home: React.FC = () => {
 
               {/* Floating card — bottom right */}
               <motion.div
-                initial={{ opacity: 0, x: 24 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.9, duration: 0.6 }}
-                className="absolute -right-8 bottom-14 bg-[#0f365d] text-white rounded-2xl p-5 shadow-[0_8px_32px_rgba(15,54,93,0.32)] animate-float-slow"
+                initial={{ opacity: 0, x: 24, filter: 'blur(8px)' }}
+                animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                transition={{ delay: 1.1, duration: 0.6 }}
+                className="absolute -right-8 bottom-14 liquid-glass-dark text-white rounded-2xl p-5 animate-float-slow"
               >
                 <p
                   className="text-3xl font-bold mb-0.5"
@@ -269,24 +288,26 @@ export const Home: React.FC = () => {
       {/* ═══════════════════════════════════════════════════════
           MARQUEE TICKER
       ════════════════════════════════════════════════════════ */}
-      <div className="bg-[#0a1628] py-4 overflow-hidden border-y border-white/[0.05]">
-        <div className="flex animate-marquee whitespace-nowrap gap-16 select-none">
-          {[...Array(2)].flatMap(() =>
-            [
-              'Systematic Reviews', 'Meta-Analysis', 'Doctor-Led Mentorship',
-              'ICMJE Authorship', 'Evidence-Based Medicine', 'High-Impact Publications',
-              'Research Pipeline', 'Academic Credibility', 'Clinical Expertise',
-            ].map((item, i) => (
-              <span
-                key={`${item}-${i}`}
-                className="inline-flex items-center gap-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500 shrink-0"
-                style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-[#C9A84C] inline-block shrink-0 animate-gold" />
-                {item}
-              </span>
-            ))
-          )}
+      <div className="bg-[#0a1628] py-5 overflow-hidden border-y border-white/[0.05]">
+        <div className="marquee-mask overflow-hidden">
+          <div className="flex animate-marquee whitespace-nowrap gap-4 select-none w-max">
+            {[...Array(2)].flatMap(() =>
+              [
+                'Systematic Reviews', 'Meta-Analysis', 'Doctor-Led Mentorship',
+                'ICMJE Authorship', 'Evidence-Based Medicine', 'High-Impact Publications',
+                'Research Pipeline', 'Academic Credibility', 'Clinical Expertise',
+              ].map((item, i) => (
+                <span
+                  key={`${item}-${i}`}
+                  className="inline-flex items-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400 shrink-0 border border-white/[0.08] bg-white/[0.04] rounded-full px-4 py-1.5"
+                  style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#C9A84C] inline-block shrink-0 animate-gold" />
+                  {item}
+                </span>
+              ))
+            )}
+          </div>
         </div>
       </div>
 
@@ -525,7 +546,7 @@ export const Home: React.FC = () => {
               className="text-4xl md:text-5xl font-bold text-white leading-tight"
               style={{ fontFamily: 'Playfair Display, serif' }}
             >
-              Our Impact <em className="gold-italic">in Numbers</em>
+              <BlurText text="Our Impact in Numbers" highlightLast={2} inView centered stagger={0.12} />
             </h2>
           </div>
 
@@ -652,6 +673,10 @@ export const Home: React.FC = () => {
             <div className="absolute -right-10 -top-10 w-48 h-48 rounded-full bg-[#C9A84C]/[0.08] border border-[#C9A84C]/10" />
             <div className="absolute left-1/3 bottom-0 w-96 h-32 rounded-full bg-[#C9A84C]/[0.04] blur-2xl" />
 
+            {/* Pulsing curved lines — ripple in from both edges */}
+            <CurvedLines side="left" className="hidden md:block" color="rgba(252,250,248,0.22)" count={8} baseWidth={40} step={12} heightPct={55} />
+            <CurvedLines side="right" className="hidden md:block" color="rgba(201,168,76,0.25)" count={8} baseWidth={40} step={12} heightPct={55} />
+
             {/* Grid */}
             <div className="absolute inset-0 opacity-[0.04] pointer-events-none">
               <svg width="100%" height="100%">
@@ -680,8 +705,13 @@ export const Home: React.FC = () => {
                 className="text-4xl md:text-6xl font-bold text-white mb-8 leading-[1.08]"
                 style={{ fontFamily: 'Playfair Display, serif' }}
               >
-                Lead the future of{' '}
-                <em className="gold-italic">medical research.</em>
+                <BlurText
+                  text="Lead the future of medical research."
+                  highlightLast={2}
+                  inView
+                  centered
+                  stagger={0.1}
+                />
               </h2>
 
               <p className="text-elegant mb-12 max-w-xl mx-auto" style={{ color: 'rgba(191,219,254,0.6)' }}>

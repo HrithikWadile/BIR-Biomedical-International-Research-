@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { dataService } from '../services/dataService';
-import { SectionTitle } from '../components/UI';
+import { SectionTitle, CurvedLines } from '../components/UI';
 import { useSEO, SITE_URL } from '../hooks/useSEO';
 
 const iconMap: Record<string, any> = {
@@ -244,6 +244,10 @@ export const Services: React.FC = () => {
           className="absolute bottom-0 right-0 w-[400px] h-[300px] pointer-events-none opacity-10"
           style={{ background: 'radial-gradient(ellipse, #C9A84C 0%, transparent 65%)' }}
         />
+
+        {/* Pulsing curved lines — ripple in from both edges */}
+        <CurvedLines side="left" className="hidden md:block" color="rgba(252,250,248,0.18)" count={8} baseWidth={44} step={13} heightPct={50} />
+        <CurvedLines side="right" className="hidden md:block" color="rgba(201,168,76,0.22)" count={8} baseWidth={44} step={13} heightPct={50} />
 
         <div className="container mx-auto px-6 relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-16">

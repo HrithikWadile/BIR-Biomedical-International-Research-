@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Linkedin, Instagram, Check, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { Menu, X, Linkedin, Instagram, Check, ArrowUpRight } from 'lucide-react';
 import { dataService, syncWithServer } from '../services/dataService';
 import { BIRLogo } from './Logo';
 
@@ -34,6 +34,14 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     setIsMenuOpen(false);
     window.scrollTo(0, 0);
   }, [location.pathname]);
+
+  // Lock page scroll while the full-screen drawer is open
+  useEffect(() => {
+    document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMenuOpen]);
 
   const handleNewsletter = (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,47 +125,77 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           </button>
         </div>
 
-        {/* Mobile slide-down menu */}
+        {/* Full-screen mobile menu drawer */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2 }}
-              className="md:hidden absolute top-full left-0 w-full bg-white border-b border-slate-100 shadow-lg"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+              className="md:hidden fixed inset-0 z-[-1] bg-[#F8F6F2] flex flex-col"
+              style={{ zIndex: -1 }}
             >
-              <div className="container mx-auto px-6 py-6 space-y-0.5">
+              {/* Subtle dot texture */}
+              <div className="absolute inset-0 opacity-[0.03] pointer-events-none" aria-hidden="true">
+                <svg width="100%" height="100%">
+                  <defs>
+                    <pattern id="drawer-dots" width="22" height="22" patternUnits="userSpaceOnUse">
+                      <circle cx="2" cy="2" r="1.2" fill="#0f365d" />
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" fill="url(#drawer-dots)" />
+                </svg>
+              </div>
+
+              <div className="flex-1 flex flex-col items-center justify-center gap-1 px-8">
                 {navLinks.map((link, i) => (
                   <motion.div
                     key={link.path}
-                    initial={{ opacity: 0, x: -16 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.04 }}
+                    initial={{ opacity: 0, y: 28, filter: 'blur(8px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    exit={{ opacity: 0, y: -12, filter: 'blur(6px)' }}
+                    transition={{ delay: 0.08 + i * 0.07, duration: 0.5, ease: 'easeOut' }}
                   >
                     <Link
                       to={link.path}
-                      className={`flex items-center justify-between py-4 border-b border-slate-50 text-base font-semibold ${
-                        location.pathname === link.path ? 'text-[#0f365d]' : 'text-slate-700'
+                      className={`block py-2.5 text-4xl font-bold text-center transition-colors ${
+                        location.pathname === link.path ? 'text-[#C9A84C]' : 'text-[#0a1628]'
                       }`}
-                      style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}
+                      style={{ fontFamily: 'Playfair Display, serif', letterSpacing: '-0.03em' }}
                     >
                       {link.name}
-                      <ArrowRight size={16} className="text-slate-300" />
                     </Link>
                   </motion.div>
                 ))}
-                <div className="pt-5">
-                  <Link to="/contact" className="block">
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0 }}
+                  transition={{ delay: 0.08 + navLinks.length * 0.07, duration: 0.5 }}
+                  className="mt-8"
+                >
+                  <Link to="/contact">
                     <button
-                      className="w-full bg-[#0f365d] text-white py-3.5 rounded-xl font-semibold text-sm uppercase tracking-widest"
+                      className="bg-[#0f365d] text-white px-10 py-4 rounded-full font-semibold text-sm uppercase tracking-widest shadow-[0_8px_28px_rgba(15,54,93,0.25)]"
                       style={{ fontFamily: 'Space Grotesk, Inter, sans-serif' }}
                     >
                       Get in Touch
                     </button>
                   </Link>
-                </div>
+                </motion.div>
               </div>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ delay: 0.5 }}
+                className="pb-10 text-center label-text text-slate-400"
+              >
+                © {new Date().getFullYear()} {settings.companyName}
+              </motion.p>
             </motion.div>
           )}
         </AnimatePresence>
