@@ -343,6 +343,82 @@
       /* Responsive clamps */
       .text-fluid-xl  { font-size: clamp(2.4rem, 5vw, 4.5rem); }
       .text-fluid-2xl { font-size: clamp(3rem, 7vw, 6rem); }
+
+      /* ── Liquid glass — frosted card with luminous gradient border ──
+         Adapted from dark-theme liquid glass to the BIR light/gold system.
+         The ::before paints a 1.4px gradient ring using a mask so only
+         the border area shows — bright at top/bottom, fading mid-edge. */
+      .liquid-glass {
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: none;
+        box-shadow: 0 8px 32px rgba(15, 54, 93, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+        position: relative;
+      }
+      .liquid-glass::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1.4px;
+        background: linear-gradient(180deg,
+          rgba(201, 168, 76, 0.55) 0%,
+          rgba(201, 168, 76, 0.15) 20%,
+          rgba(255, 255, 255, 0) 40%,
+          rgba(255, 255, 255, 0) 60%,
+          rgba(201, 168, 76, 0.15) 80%,
+          rgba(201, 168, 76, 0.55) 100%);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+      }
+      .liquid-glass-dark {
+        background: rgba(10, 22, 40, 0.55);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: none;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.12);
+        position: relative;
+      }
+      .liquid-glass-dark::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1.4px;
+        background: linear-gradient(180deg,
+          rgba(255, 255, 255, 0.4) 0%,
+          rgba(255, 255, 255, 0.12) 20%,
+          rgba(255, 255, 255, 0) 40%,
+          rgba(255, 255, 255, 0) 60%,
+          rgba(201, 168, 76, 0.2) 80%,
+          rgba(201, 168, 76, 0.5) 100%);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+      }
+
+      /* ── Pulsing curved lines — staggered concentric arcs that
+         breathe in and out. Each line delays 0.25s after the last,
+         creating a ripple that emanates from the section edge. ── */
+      @keyframes line-pulse {
+        0%   { opacity: 0;   transform: scale(1); }
+        15%  { opacity: 0.9; }
+        70%  { opacity: 0.4; }
+        100% { opacity: 0;   transform: scale(0.85); }
+      }
+
+      /* ── Edge-fade mask for marquees — content dissolves at both
+         ends instead of clipping hard. ── */
+      .marquee-mask {
+        -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
+        mask-image: linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%);
+      }
     </style>
 
     <script type="importmap">

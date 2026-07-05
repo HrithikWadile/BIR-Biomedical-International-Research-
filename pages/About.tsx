@@ -7,7 +7,7 @@ import {
   GraduationCap, Globe, UserCheck, Clipboard,
   Activity, Stethoscope
 } from 'lucide-react';
-import { SectionTitle } from '../components/UI';
+import { SectionTitle, BlurText, CurvedLines } from '../components/UI';
 import { useSEO, SITE_URL } from '../hooks/useSEO';
 
 const expertise = [
@@ -83,21 +83,22 @@ export const About: React.FC = () => {
               <div className="h-px w-8 bg-[#C9A84C]" />
             </div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-5xl md:text-7xl font-bold heading-gradient leading-[1.04] mb-10"
+            <h1
+              className="text-5xl md:text-7xl font-bold text-[#0a1628] leading-[1.04] mb-10"
               style={{ fontFamily: 'Playfair Display, serif' }}
             >
-              Advancing Medicine Through{' '}
-              <em className="gold-italic">Ethical Research</em>
-            </motion.h1>
+              <BlurText
+                text="Advancing Medicine Through Ethical Research"
+                highlightLast={2}
+                delay={0.1}
+                stagger={0.12}
+              />
+            </h1>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15, duration: 0.7 }}
+              initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              transition={{ delay: 0.5, duration: 0.7 }}
               className="space-y-5 text-elegant max-w-3xl"
             >
               <p>
@@ -335,6 +336,10 @@ export const About: React.FC = () => {
           className="absolute inset-x-0 top-0 h-[200px] pointer-events-none opacity-20"
           style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.4) 0%, transparent 60%)' }}
         />
+
+        {/* Pulsing curved lines — ripple in from both edges */}
+        <CurvedLines side="left" className="hidden md:block" color="rgba(252,250,248,0.18)" count={8} baseWidth={44} step={13} heightPct={55} />
+        <CurvedLines side="right" className="hidden md:block" color="rgba(201,168,76,0.22)" count={8} baseWidth={44} step={13} heightPct={55} />
 
         <div className="container mx-auto px-6 text-center relative z-10">
           <div className="max-w-4xl mx-auto">
